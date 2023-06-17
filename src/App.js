@@ -1,11 +1,10 @@
 import './App.css';
+import NavBar from './components/navbar.components';
 
 function App() {
   return (
-    <div className="App">
-      <h1>
-        blisskart.in
-      </h1>
+    <div className="w-full flex font-poppins">
+      <NavBar/>
     </div>
   );
 }
