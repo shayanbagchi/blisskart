@@ -7,10 +7,10 @@ module.exports = {
     extend: {
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
-        logo: ["Tilt Prism", "sans-serif"]
+        logo: ["Itim", "sans-serif"]
       },
       colors: {
-        'bgwhite': '#F5F5F5',
+        'magic': '#C1DCDC',
         'link-blue': '#346BD4',
       },
     },
