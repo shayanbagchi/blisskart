@@ -33,7 +33,7 @@ function NavBar() {
       <div className="mx-8 md:mx-16 lg:mx-24 border-b border-black"></div>
       <div className="flex sm:hidden justify-between items-center mx-9 my-4 border border-neutral-500 rounded-3xl focus-within:border-black focus-within:scale-[101%] transform transition-transform">
         <input
-          className="appearance-none sm:w-[320px] lg:w-[384px] ml-4 focus:outline-none placeholder:text-sm md:placeholder:text-base"
+          className="appearance-none w-3/4 sm:w-[320px] lg:w-[384px] ml-4 focus:outline-none placeholder:text-sm md:placeholder:text-base"
           type="text"
           placeholder="What are you looking for?"
         />
