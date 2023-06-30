@@ -5,7 +5,7 @@ import { ReactComponent as Instagram } from "../assets/ri_instagram.svg";
 
 function Footer() {
   return (
-    <div className="px-8 md:px-16 xl:px-24 md:mt-4 bg-magic">
+    <div className="px-6 xs:px-8 md:px-16 xl:px-24 md:mt-4 bg-magic">
       <div className="flex flex-col md:flex-row">
         <div className="flex flex-col shrink-0 w-full md:w-[30%] pt-12">
           <div>

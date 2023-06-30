@@ -7,7 +7,7 @@ import { ReactComponent as ProfileIcon } from "../assets/profile_icon.svg";
 function NavBar() {
   return (
     <>
-      <div className="flex justify-between items-center mx-8 md:mx-16 lg:mx-24 mt-6 mb-4">
+      <div className="flex justify-between items-center mx-4 xs:mx-6 md:mx-16 lg:mx-24 mt-6 mb-4">
         <span className="font-logo text-3xl">
           <img src={Logo} alt="BlissKart" className="h-8 lg:h-10" />
         </span>
@@ -30,8 +30,8 @@ function NavBar() {
           </span>
         </div>
       </div>
-      <div className="mx-8 md:mx-16 lg:mx-24 border-b border-black"></div>
-      <div className="flex sm:hidden justify-between items-center mx-9 my-4 border border-neutral-500 rounded-3xl focus-within:border-black focus-within:scale-[101%] transform transition-transform">
+      <div className="mx-4 xs:mx-6 md:mx-16 lg:mx-24 border-b border-black"></div>
+      <div className="flex sm:hidden justify-between items-center mx-4 xs:mx-6 my-4 border border-neutral-500 rounded-3xl focus-within:border-black focus-within:scale-[101%] transform transition-transform">
         <input
           className="appearance-none w-3/4 sm:w-[320px] lg:w-[384px] ml-4 focus:outline-none placeholder:text-sm md:placeholder:text-base"
           type="text"

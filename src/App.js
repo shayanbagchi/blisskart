@@ -1,4 +1,4 @@
-import Bestseller from './components/bestseller.component';
+import BestSeller from './components/bestseller.component';
 import Catagories from './components/catagories.component';
 import Footer from './components/footer.component';
 import NavBar from './components/navbar.components';
@@ -10,7 +10,7 @@ function App() {
       <NavBar/>
       <SearchHero/>
       <Catagories/>
-      <Bestseller/>
+      <BestSeller/>
       <Footer/>
     </div>
   );
