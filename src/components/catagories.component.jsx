@@ -2,8 +2,12 @@ import React from "react";
 
 function Catagories() {
   return (
-    <div className="flex flex-col md:flex-row justify-between mx-4 xs:mx-6 md:mx-16 lg:mx-24 my-4">
-      
+    <div>
+      <div className="my-2 mx-4 pl-1 xs:mx-6 md:mx-16 lg:mx-24">
+        <p className="xl:mt-6 font-semibold md:font-bold xs:text-lg md:text-2xl xl:text-3xl">Shop By Collection</p>
+        <p className="mt-1 font-light text-xs md:text-sm text-neutral-600">Find the Perfect Gift for Your Loved Ones!</p>
+      </div>
+      <div className="flex flex-col md:flex-row justify-between mx-4 xs:mx-6 md:mx-16 lg:mx-24 my-2 md:my-4">
       {/* <div className='flex w-full md:w-[49%] lg:w-[49.5%] h-[192px] md:h-80 xl:h-[384px] border border-black rounded-2xl cursor-pointer hover:scale-[101%] transform transition-transform'>
           <p className='m-6 text-neutral-600 md:text-xl xl:text-2xl'>Stationary & <br/> Desk Accessories</p>
         </div> */}
@@ -35,6 +39,8 @@ function Catagories() {
         </div>
       </div>
     </div>
+    </div>
+    
   );
 }
 

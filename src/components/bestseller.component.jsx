@@ -18,7 +18,7 @@ function BestSeller() {
         <p className="xl:mt-12 font-bold text-2xl xl:text-3xl">
           Best Selling Gifts
         </p>
-        <p className="mt-1 xl:mt-3">Gifts That Sparkle, Shine, and Surprise!</p>
+        <p className="mt-1 xl:mt-3 md:text-sm font-light">Gifts That Sparkle, Shine, and Surprise!</p>
       </div>
 
       <div className="w-full xl:w-5/6 md:px-3 lg:px-10 xl:px-0 xl:pr-12">
