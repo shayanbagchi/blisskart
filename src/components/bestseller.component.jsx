@@ -13,7 +13,7 @@ import product_img_3 from "../assets/product_3.jpg";
 
 function BestSeller() {
   return (
-    <div className="hidden md:flex flex-col xl:flex-row h-auto my-2 xl:ml-24 xl:my-4">
+    <div className="hidden md:flex flex-col xl:flex-row h-auto my-2 xl:ml-24 xl:my-6">
       <div className="min-w-min xl:w-1/6 md:mx-16 lg:mx-24 xl:mx-0 xl:px-3 pb-4 xl:py-6">
         <p className="xl:mt-12 font-bold text-2xl xl:text-3xl">
           Best Selling Gifts
