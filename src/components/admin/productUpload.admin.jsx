@@ -1,20 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { useDropzone } from "react-dropzone";
 import {
   uploadFile,
   getFileDownloadURL,
   addProduct,
+  updateProduct,
   fetchProducts,
 } from "../../utils/firebase.util";
 import ProductList from "./product-list.admin";
+import ProductUpdate from "./productUpdate.admin";
 
 const ProductUpload = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [imageURIs, setImageURIs] = useState([]);
 
+  const [docID, setDocID] = useState(""); // New state variable for doc.id
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
-  const [categories, setCategories] = useState("");
+  const [categories, setCategories] = useState([]);
   const [desc, setDesc] = useState("");
 
   const [products, setProducts] = useState([]);
@@ -47,10 +51,16 @@ const ProductUpload = () => {
   });
 
   const handleUpload = async () => {
+    // Call the function to add the product to the database
+    const docID = await addProduct();
+
+    // Update the state with the docID
+    setDocID(docID);
+
     try {
       const promises = uploadedFiles.map(async (file) => {
-        await uploadFile(file);
-        const downloadURL = await getFileDownloadURL(file.name);
+        await uploadFile(docID, file);
+        const downloadURL = await getFileDownloadURL(docID, file.name);
         return downloadURL;
       });
 
@@ -61,7 +71,6 @@ const ProductUpload = () => {
 
       // Add the unique image URIs to the state
       setImageURIs((prevImageURIs) => [...prevImageURIs, ...uniqueUrls]);
-
     } catch (error) {
       console.error("Error uploading file:", error);
     }
@@ -81,7 +90,7 @@ const ProductUpload = () => {
       };
 
       // Call the function to update the database
-      await addProduct(product);
+      await updateProduct(docID, product);
 
       // Fetch the updated list of products
       const fetchedProducts = await fetchProducts();
@@ -93,7 +102,7 @@ const ProductUpload = () => {
       setDesc("");
       setImageURIs([]);
       setUploadedFiles([]);
-      setCategories("");
+      setCategories([]);
     } else {
       console.log("Please fill in all the fields and upload an image");
     }
@@ -246,6 +255,9 @@ const ProductUpload = () => {
           </form>
         </div>
       </div>
+      <div className="mx-4 xs:mx-6 md:mx-16 lg:mx-24 border-b border-black" />
+      <ProductUpdate />
+      <div className="mx-4 xs:mx-6 md:mx-16 lg:mx-24 border-b border-black" />
       <ProductList products={products} />
     </div>
   );

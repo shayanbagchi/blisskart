@@ -1,7 +1,22 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { v4 as uuidv4 } from 'uuid';
+import {
+  getFirestore,
+  collection,
+  doc,
+  addDoc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  arrayRemove,
+  arrayUnion,
+} from "firebase/firestore";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAuwUUFDWVRYVDzWql0t5N-irH0QNyGxTw",
@@ -19,27 +34,23 @@ const db = getFirestore(app);
 
 const storage = getStorage();
 
-
-export const addProduct = async (product) => {
+export const addProduct = async () => {
   try {
-    const docRef = await addDoc(collection(db, "products"), {
-      productID: uuidv4(),
-      ...product,
-    });
-    console.log("Product added with ID:", docRef.id);
+    const docRef = await addDoc(collection(db, "products"), {}); // Empty document
+    console.log("Blank product document created with ID:", docRef.id);
+    return docRef.id; // Return the document ID
   } catch (e) {
-    console.error("Error adding product:", e);
+    console.error("Error creating blank product document:", e);
   }
 };
 
-
-export const uploadFile = async (file) => {
-  const storageRef = ref(storage, `images/${file.name}`);
+export const uploadFile = async (docID, file) => {
+  const storageRef = ref(storage, `images/${docID}/${file.name}`);
   await uploadBytes(storageRef, file);
 };
 
-export const getFileDownloadURL = async (fileName) => {
-  const storageRef = ref(storage, `images/${fileName}`);
+export const getFileDownloadURL = async (docID, fileName) => {
+  const storageRef = ref(storage, `images/${docID}/${fileName}`);
   const downloadURL = await getDownloadURL(storageRef);
   return downloadURL;
 };
@@ -55,5 +66,80 @@ export const fetchProducts = async () => {
   } catch (error) {
     console.error("Error fetching products:", error);
     return [];
+  }
+};
+
+export const fetchProductById = async (productId) => {
+  try {
+    const docRef = doc(db, "products", productId);
+    const docSnapshot = await getDoc(docRef);
+
+    if (docSnapshot.exists()) {
+      return { id: docSnapshot.id, ...docSnapshot.data() };
+    } else {
+      console.log("Product does not exist");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return null;
+  }
+};
+
+export const deleteProductPicture = async (productId, pictureURL) => {
+  try {
+    // Delete the picture from Firebase Storage
+    const storageRef = ref(storage, pictureURL);
+    await deleteObject(storageRef);
+
+    // Delete the picture URL from the Firestore document
+    const docRef = doc(db, "products", productId);
+    await updateDoc(docRef, {
+      imageURIs: arrayRemove(pictureURL),
+    });
+
+    console.log("Product picture deleted successfully");
+  } catch (error) {
+    console.error("Error deleting product picture:", error);
+  }
+};
+
+
+export const updateProductPictures = async (productId, pictures) => {
+  try {
+    const pictureURLs = [];
+
+    // Upload new pictures to Firebase Storage
+    for (let i = 0; i < pictures.length; i++) {
+      const file = pictures[i];
+      const storageRef = ref(storage, `images/${productId}/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+      pictureURLs.push(downloadURL);
+    }
+
+    // Update the Firestore document with the new picture URLs
+    const docRef = doc(db, "products", productId);
+    await updateDoc(docRef, {
+      imageURIs: arrayUnion(...pictureURLs),
+    });
+
+    console.log("Product pictures updated successfully");
+
+    return pictureURLs;
+  } catch (error) {
+    console.error("Error updating product pictures:", error);
+    return [];
+  }
+};
+
+
+export const updateProduct = async (productId, updatedData) => {
+  try {
+    const docRef = doc(db, "products", productId);
+    await updateDoc(docRef, updatedData);
+    console.log("Product updated successfully");
+  } catch (error) {
+    console.error("Error updating product:", error);
   }
 };

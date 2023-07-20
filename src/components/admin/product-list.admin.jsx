@@ -22,7 +22,7 @@ const ProductList = ({ products }) => {
   };
 
   return (
-    <div className="flex flex-wrap items-center mb-2 md:mb-0 sm:mt-3 md:mt-4 lg:mt-6 mx-4 pl-1 xs:mx-6 md:mx-16 lg:mx-24">
+    <div className="flex flex-wrap items-center sm:my-3 md:my-4 lg:my-8 pl-1 xs:mx-6 md:mx-16 lg:mx-24">
       {products.map((product) => (
         <div
           key={product.id}
@@ -49,42 +49,42 @@ const ProductList = ({ products }) => {
           <div className="flex justify-center items-center mx-24">
             <div className="flex justify-center items-center relative py-24 bg-white rounded-xl">
               <div className="w-2/5 ml-6">
-              <div className="w-5/6 pb-1 relative float-right">
-              <CarouselProvider
-                  visibleSlides={1}
-                  totalSlides={selectedProduct.imageURIs.length}
-                  naturalSlideWidth={5}
-                  naturalSlideHeight={3}
-                  isIntrinsicHeight={true}
-                >
-                  <Slider>
-                    {selectedProduct.imageURIs.map((imageURI, index) => (
-                      <Slide key={index} index={index}>
-                        <img
-                          src={imageURI}
-                          alt={selectedProduct.title}
-                          className="border border-black"
-                        />
-                      </Slide>
-                    ))}
-                  </Slider>
+                <div className="w-5/6 relative float-right">
+                  <CarouselProvider
+                    visibleSlides={1}
+                    totalSlides={selectedProduct.imageURIs.length}
+                    naturalSlideWidth={5}
+                    naturalSlideHeight={3}
+                    isIntrinsicHeight={true}
+                  >
+                    <Slider>
+                      {selectedProduct.imageURIs.map((imageURI, index) => (
+                        <Slide key={index} index={index}>
+                          <img
+                            src={imageURI}
+                            alt={selectedProduct.title}
+                            className="mb-1 border border-black"
+                          />
+                        </Slide>
+                      ))}
+                    </Slider>
 
-                  <div className="flex flex-col w-1/6 h-full absolute top-1/2 transform -translate-y-1/2 left-[-20%] overflow-y-scroll no-scrollbar">
-                    {selectedProduct.imageURIs.map((imageURI, index) => (
-                      <Dot
-                        key={index}
-                        className="w-full mb-1 xl:mb-2 border border-neutral-400 hover:border-2 rounded"
-                        slide={index}
-                      >
-                        <Image src={imageURI} />
-                      </Dot>
-                    ))}
-                  </div>
-                </CarouselProvider>
-              </div>
+                    <div className="flex flex-col w-1/6 h-full absolute top-1/2 transform -translate-y-1/2 left-[-20%] overflow-y-scroll no-scrollbar">
+                      {selectedProduct.imageURIs.map((imageURI, index) => (
+                        <Dot
+                          key={index}
+                          className="w-full mb-1 xl:mb-2 border border-neutral-400 hover:border-2 rounded"
+                          slide={index}
+                        >
+                          <Image src={imageURI} />
+                        </Dot>
+                      ))}
+                    </div>
+                  </CarouselProvider>
+                </div>
               </div>
               <div className="w-3/5 flex items-center justify-center">
-                <div className="p-8 mx-4 md:mx-auto">
+                <div className="px-8 mx-4 md:mx-auto">
                   <h2 className="text-2xl font-bold mb-2">
                     {selectedProduct.title}
                   </h2>
@@ -92,14 +92,21 @@ const ProductList = ({ products }) => {
                     Price: ₹ {selectedProduct.price}
                   </p>
                   <p className="text-lg mb-4">
-                    ID: <span className="font-semibold text-blue-500">{selectedProduct.id}</span>
+                    ID:{" "}
+                    <span className="font-semibold text-blue-500">
+                      {selectedProduct.id}
+                    </span>
                   </p>
                   {selectedProduct.categories &&
-                    selectedProduct.categories.length > 0 && (
-                      <p className="text-lg mb-4">
-                        Categories: {selectedProduct.categories.join(", ")}
-                      </p>
-                    )}
+                  selectedProduct.categories.length > 0 ? (
+                    <p className="text-lg mb-4">
+                      Categories: {selectedProduct.categories.join(", ")}
+                    </p>
+                  ) : (
+                    <p className="text-lg mb-4">
+                      Categories: {selectedProduct.categories}
+                    </p>
+                  )}
                   <p className="text-lg">{selectedProduct.desc}</p>
                   <button
                     className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md mt-4"
