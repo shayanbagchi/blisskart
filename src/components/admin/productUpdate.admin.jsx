@@ -14,7 +14,7 @@ import {
 } from "pure-react-carousel";
 import { ReactComponent as DeleteIcon } from "../../assets/delete_icon.svg";
 
-const ProductUpdate = () => {
+const ProductUpdate = ({ fetchProductsData }) => {
   const [productId, setProductId] = useState("");
   const [product, setProduct] = useState(null);
   const [updatedProduct, setUpdatedProduct] = useState(null);
@@ -59,13 +59,15 @@ const ProductUpdate = () => {
 
     // Clear the selectedFiles state after updating the product images if needed
     setSelectedFiles([]);
+
+    alert("Picture updated successfully");
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     let updatedValue = value;
 
-    if (name === "categories") {
+    if (name === "categories" || "prodInfo") {
       updatedValue = value.split(",").map((category) => category.trim());
     }
 
@@ -76,8 +78,11 @@ const ProductUpdate = () => {
   };
 
   const handleUpdate = async () => {
-    await updateProduct(product.id, updatedProduct);
-    console.log("Product updated successfully");
+    await updateProduct(product.id, { ...updatedProduct, outOfStock: updatedProduct.outOfStock });
+    fetchProductsData();
+    setProduct(null);
+    setProductId("");
+    alert("Product updated successfully");
   };
 
   return (
@@ -183,7 +188,16 @@ const ProductUpdate = () => {
               className="border border-gray-300 rounded-md px-3 py-2 mb-4"
             />
 
-            <label className="text-lg font-semibold mb-2">Categories:</label>
+            <label className="text-lg font-semibold mb-2">Discounted Price:</label>
+            <input
+              type="text"
+              name="discountedPrice"
+              value={updatedProduct.discountedPrice}
+              onChange={handleChange}
+              className="border border-gray-300 rounded-md px-3 py-2 mb-4"
+            />
+
+            <label className="text-lg font-semibold mb-2">Categories (separated by comma):</label>
             <input
               type="text"
               name="categories"
@@ -199,11 +213,48 @@ const ProductUpdate = () => {
             <label className="text-lg font-semibold mb-2">Description:</label>
             <textarea
               name="desc"
-              rows={10}
+              rows={5}
               value={updatedProduct.desc}
               onChange={handleChange}
               className="border border-gray-300 rounded-md px-3 py-2 mb-4"
             ></textarea>
+
+            <label className="text-lg font-semibold mb-2">Product Info (separated by comma):</label>
+            <textarea
+              name="prodInfo"
+              rows={5}
+              value={
+                Array.isArray(updatedProduct.prodInfo)
+                  ? updatedProduct.prodInfo.join(", ")
+                  : updatedProduct.prodInfo || ""
+              }
+              onChange={handleChange}
+              className="border border-gray-300 rounded-md px-3 py-2 mb-4"
+            ></textarea>
+
+            <div className="flex mb-4">
+              <label className="block text-lg font-semibold">
+                Out of Stock:
+                <input
+                  type="radio"
+                  name="outOfStock"
+                  checked={updatedProduct.outOfStock === true}
+                  onChange={() => setUpdatedProduct({ ...updatedProduct, outOfStock: true })}
+                  className="ml-4"
+                />
+                Yes
+              </label>
+              <label className="block text-lg font-semibold">
+                <input
+                  type="radio"
+                  name="outOfStock"
+                  checked={updatedProduct.outOfStock === false}
+                  onChange={() => setUpdatedProduct({ ...updatedProduct, outOfStock: false })}
+                  className="ml-4"
+                />
+                No
+              </label>
+            </div>
 
             <button
               className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"

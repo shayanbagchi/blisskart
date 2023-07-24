@@ -77,7 +77,7 @@ export const fetchProductById = async (productId) => {
     if (docSnapshot.exists()) {
       return { id: docSnapshot.id, ...docSnapshot.data() };
     } else {
-      console.log("Product does not exist");
+      alert("Product does not exist");
       return null;
     }
   } catch (error) {

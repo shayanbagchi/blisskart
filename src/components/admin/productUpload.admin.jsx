@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { useDropzone } from "react-dropzone";
 import {
   uploadFile,
@@ -15,21 +14,24 @@ const ProductUpload = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [imageURIs, setImageURIs] = useState([]);
 
-  const [docID, setDocID] = useState(""); // New state variable for doc.id
+  const [docID, setDocID] = useState("");
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
+  const [discountedPrice, setDiscountedPrice] = useState("");
   const [categories, setCategories] = useState([]);
+  const [outOfStock, setOutOfStock] = useState(false);
   const [desc, setDesc] = useState("");
+  const [prodInfo, setProdInfo] = useState([]);
 
   const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    const fetchProductsData = async () => {
-      const fetchedProducts = await fetchProducts();
-      setProducts(fetchedProducts);
-      console.log("Hit");
-    };
+  const fetchProductsData = async () => {
+    const fetchedProducts = await fetchProducts();
+    setProducts(fetchedProducts);
+    console.log("Hit");
+  };
 
+  useEffect(() => {
     fetchProductsData();
   }, []);
 
@@ -79,14 +81,16 @@ const ProductUpload = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (imageURIs.length > 0 && title && price && desc && categories) {
+    if (imageURIs.length > 0 && title && price && categories) {
       const product = {
         title,
         price,
+        discountedPrice,
         desc,
+        outOfStock,
         imageURIs,
         categories: categories.split(",").map((category) => category.trim()),
-        // Other product properties
+        prodInfo: prodInfo.split(",").map((prodInfo) => prodInfo.trim()),
       };
 
       // Call the function to update the database
@@ -99,20 +103,25 @@ const ProductUpload = () => {
       // Reset the form fields
       setTitle("");
       setPrice("");
+      setDiscountedPrice("");
       setDesc("");
       setImageURIs([]);
       setUploadedFiles([]);
       setCategories([]);
+      setProdInfo([]);
+      setOutOfStock(false);
     } else {
-      console.log("Please fill in all the fields and upload an image");
+      alert(
+        "Make sure you uploaded all the images and filled all the necessary fields!"
+      );
     }
   };
 
   return (
     <div>
       <div className="flex py-12">
-        <div className="w-1/2 pl-6 md:pl-16 lg:pl-24">
-          <h1 className="text-2xl font-bold mb-4">Product Image</h1>
+        <div className="w-2/5 pl-6 md:pl-16 lg:pl-24">
+          <h1 className="text-2xl font-bold mb-4">Product Image:</h1>
           <div
             {...getRootProps()}
             className={`flex justify-center items-center h-64 mb-4 border-2 border-dashed border-gray-300 ${
@@ -167,9 +176,9 @@ const ProductUpload = () => {
           </button>
         </div>
 
-        <div className="w-1/2 px-6 md:px-16 lg:px-24 mt-4 ">
+        <div className="w-3/5 px-6 md:px-16 lg:px-24 mt-3">
           <form onSubmit={handleSubmit}>
-            <label htmlFor="title" className="block mb-2">
+            <label htmlFor="title" className="block text-lg font-semibold mb-2">
               Title:
             </label>
             <input
@@ -180,7 +189,7 @@ const ProductUpload = () => {
               className="border border-gray-300 rounded-md px-3 py-2 mb-4 w-full"
             />
 
-            <label htmlFor="price" className="block mb-2">
+            <label htmlFor="price" className="block text-lg font-semibold mb-2">
               Price:
             </label>
             <input
@@ -191,7 +200,21 @@ const ProductUpload = () => {
               className="border border-gray-300 rounded-md px-3 py-2 mb-4 w-full"
             />
 
-            <label htmlFor="categories" className="block mb-2">
+            <label htmlFor="price" className="block text-lg font-semibold mb-2">
+              Discounted Price:
+            </label>
+            <input
+              type="text"
+              id="discountedPrice"
+              value={discountedPrice}
+              onChange={(e) => setDiscountedPrice(e.target.value)}
+              className="border border-gray-300 rounded-md px-3 py-2 mb-4 w-full"
+            />
+
+            <label
+              htmlFor="categories"
+              className="block text-lg font-semibold mb-2"
+            >
               Categories (separated by comma):
             </label>
             <input
@@ -202,39 +225,51 @@ const ProductUpload = () => {
               className="border border-gray-300 rounded-md px-3 py-2 mb-4 w-full"
             />
 
-            <label htmlFor="desc" className="block mb-2">
+            <label htmlFor="desc" className="block text-lg font-semibold mb-2">
               Description:
             </label>
             <textarea
               id="desc"
+              rows={5}
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
               className="border border-gray-300 rounded-md px-3 py-2 mb-4 w-full"
             />
 
-            {/* <label htmlFor="desc" className="block mb-1">
-              Product Info:
-            </label>
-
-            <label htmlFor="desc" className="block mb-1 italic">
-              Constituents:
+            <label htmlFor="desc" className="block text-lg font-semibold mb-2">
+              Product Info (separated by comma):
             </label>
             <textarea
-              id="desc"
-              value={desc}
-              onChange={(e) => setDesc(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-1 mb-1 w-full"
+              id="prodInfo"
+              rows={5}
+              value={prodInfo}
+              onChange={(e) => setProdInfo(e.target.value)}
+              className="border border-gray-300 rounded-md px-3 py-2 mb-4 w-full"
             />
 
-            <label htmlFor="desc" className="block mb-2 italic">
-              Specifications:
-            </label>
-            <textarea
-              id="desc"
-              value={desc}
-              onChange={(e) => setDesc(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-1 mb-4 w-full"
-            /> */}
+            <div className="flex mb-4">
+              <label className="block text-lg font-semibold">
+                Out of Stock:
+                <input
+                  type="radio"
+                  name="outOfStock"
+                  checked={outOfStock}
+                  onChange={() => setOutOfStock(true)}
+                  className="ml-4 mr-2"
+                />
+                Yes
+              </label>
+              <label className="block text-lg font-semibold">
+                <input
+                  type="radio"
+                  name="outOfStock"
+                  checked={!outOfStock}
+                  onChange={() => setOutOfStock(false)}
+                  className="ml-4 mr-2"
+                />
+                No
+              </label>
+            </div>
 
             <button
               type="submit"
@@ -256,7 +291,7 @@ const ProductUpload = () => {
         </div>
       </div>
       <div className="mx-4 xs:mx-6 md:mx-16 lg:mx-24 border-b border-black" />
-      <ProductUpdate />
+      <ProductUpdate fetchProductsData={fetchProductsData}/>
       <div className="mx-4 xs:mx-6 md:mx-16 lg:mx-24 border-b border-black" />
       <ProductList products={products} />
     </div>
