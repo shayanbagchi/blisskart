@@ -118,7 +118,7 @@ const ProductUpload = () => {
   };
 
   return (
-    <div>
+    <div className="font-poppins">
       <div className="flex py-12">
         <div className="w-2/5 pl-6 md:pl-16 lg:pl-24">
           <h1 className="text-2xl font-bold mb-4">Product Image:</h1>
