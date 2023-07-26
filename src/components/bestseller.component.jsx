@@ -7,10 +7,9 @@ import {
   ButtonNext,
 } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
+import { Link } from "react-router-dom";
 
 const BestSeller = ({products}) => {
-  const bestsellers = products.filter((product) => product.categories.includes('Bestseller'));
-
   return (
     <div className="hidden md:flex flex-col xl:flex-row h-auto my-2 xl:ml-24 xl:my-6">
       <div className="min-w-min xl:w-1/6 md:mx-16 lg:mx-24 xl:mx-0 xl:px-3 pb-4 xl:py-6">
@@ -28,7 +27,7 @@ const BestSeller = ({products}) => {
           naturalSlideWidth={1}
           naturalSlideHeight={1}
           isIntrinsicHeight={true}
-          totalSlides={bestsellers.length}
+          totalSlides={products.length}
           visibleSlides={3}
           step={3}
           infinite={true}
@@ -37,20 +36,24 @@ const BestSeller = ({products}) => {
             &#8592;
           </ButtonBack>
           <Slider>
-            {bestsellers.map((product, index) => (
+            {products.map((product, index) => (
               <Slide
                 innerClassName="flex justify-center pb-1"
                 key={index}
                 index={index}
               >
-                <div className="shrink-0 w-[93%] border border-black rounded-xl cursor-pointer">
+                <Link
+                  to={`/${product.id}/${encodeURIComponent(product.title)}`}
+                  key={index} 
+                  className="shrink-0 w-[93%] border border-black rounded-xl cursor-pointer"
+                >
                   <img
                     src={product.imageURIs[0]}
                     alt={product.title}
                     className="w-full rounded-t-xl"
                   />
                   <div className="m-3">
-                    <p className="h-6 overflow-hidden line-clamp-1" title={product.title}>{product.title}</p>
+                    <p className="overflow-hidden line-clamp-1" title={product.title}>{product.title}</p>
                     {product.discountedPrice ? (
                       <div className="flex my-[2px]">
                         <p className="text-xs">
@@ -70,7 +73,7 @@ const BestSeller = ({products}) => {
                     )}
                     <p className="text-xs">No Ratings ⭐</p>
                   </div>
-                </div>
+                </Link>
               </Slide>
             ))}
           </Slider>

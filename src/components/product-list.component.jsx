@@ -3,12 +3,9 @@ import { Link } from "react-router-dom";
 import NavBar from "./navbar.component";
 import Footer from "./footer.component";
 import { ReactComponent as SortIcon } from "../assets/sort_icon.svg";
-import product_img_1 from "../assets/product_1.png";
-import product_img_2 from "../assets/product_2.png";
-import product_img_3 from "../assets/product_3.jpg";
 import Dropdown from "./dropdown.component";
 
-function ProductList() {
+function ProductList({ products, category }) {
   // const handleOptionSelect = (option) => {
   //   // Logic to handle selected option in parent component
   //   console.log('Selected Option:', option);
@@ -24,10 +21,10 @@ function ProductList() {
       <div className="flex justify-between items-center mb-2 md:mb-0 sm:mt-3 md:mt-4 lg:mt-6 mx-4 pl-1 xs:mx-6 md:mx-16 lg:mx-24">
         <div>
           <p className="font-semibold md:font-bold text-sm xs:text-lg md:text-2xl xl:text-3xl">
-            Home & Living Decor
+            {category}
           </p>
           <p className="md:mt-1 font-light text-xs md:text-base xl:text-lg text-neutral-600">
-            999 Gifts
+            {products.length} items
           </p>
         </div>
         <div>
@@ -43,186 +40,46 @@ function ProductList() {
         </div>
       </div>
       <div className="flex flex-wrap justify-between mx-4 xs:mx-6 md:mx-16 lg:mx-24 sm:my-2 md:my-4 mb-2">
-        <Link
-          to="/product"
-          className="shrink-0 w-[49%] xs:w-[32.5%] lg:w-[24.3%] mb-[6px] sm:mb-2 xl:mb-3 border border-black rounded-xl cursor-pointer hover:scale-[101%]"
-        >
-          <img
-            src={product_img_1}
-            alt="Something Cool"
-            className="w-full rounded-t-xl"
-          />
-          <div className="m-2 lg:m-3">
-            <p className="text-sm sm:text-base">Ceramic Mug</p>
-            <p className="text-xs sm:text-sm">₹ 699</p>
-            <p className="text-xs sm:text-sm">4.5 ⭐</p>
-          </div>
-        </Link>
-        <Link
-          to="/product"
-          className="shrink-0 w-[49%] xs:w-[32.5%] lg:w-[24.3%] mb-[6px] sm:mb-2 xl:mb-3 border border-black rounded-xl cursor-pointer hover:scale-[101%]"
-        >
-          <img
-            src={product_img_2}
-            alt="Something Cool"
-            className="w-full rounded-t-xl"
-          />
-          <div className="m-2 lg:m-3">
-            <p className="text-sm sm:text-base">Ceramic Mug</p>
-            <p className="text-xs sm:text-sm">₹ 699</p>
-            <p className="text-xs sm:text-sm">4.5 ⭐</p>
-          </div>
-        </Link>
-        <Link
-          to="/product"
-          className="shrink-0 w-[49%] xs:w-[32.5%] lg:w-[24.3%] mb-[6px] sm:mb-2 xl:mb-3 border border-black rounded-xl cursor-pointer hover:scale-[101%]"
-        >
-          <img
-            src={product_img_3}
-            alt="Something Cool"
-            className="w-full rounded-t-xl"
-          />
-          <div className="m-2 lg:m-3">
-            <p className="text-sm sm:text-base">Ceramic Mug</p>
-            <p className="text-xs sm:text-sm">₹ 699</p>
-            <p className="text-xs sm:text-sm">4.5 ⭐</p>
-          </div>
-        </Link>
-        <Link
-          to="/product"
-          className="shrink-0 w-[49%] xs:w-[32.5%] lg:w-[24.3%] mb-[6px] sm:mb-2 xl:mb-3 border border-black rounded-xl cursor-pointer hover:scale-[101%]"
-        >
-          <img
-            src={product_img_1}
-            alt="Something Cool"
-            className="w-full rounded-t-xl"
-          />
-          <div className="m-2 lg:m-3">
-            <p className="text-sm sm:text-base">Ceramic Mug</p>
-            <p className="text-xs sm:text-sm">₹ 699</p>
-            <p className="text-xs sm:text-sm">4.5 ⭐</p>
-          </div>
-        </Link>
-        <Link
-          to="/product"
-          className="shrink-0 w-[49%] xs:w-[32.5%] lg:w-[24.3%] mb-[6px] sm:mb-2 xl:mb-3 border border-black rounded-xl cursor-pointer hover:scale-[101%]"
-        >
-          <img
-            src={product_img_2}
-            alt="Something Cool"
-            className="w-full rounded-t-xl"
-          />
-          <div className="m-2 lg:m-3">
-            <p className="text-sm sm:text-base">Ceramic Mug</p>
-            <p className="text-xs sm:text-sm">₹ 699</p>
-            <p className="text-xs sm:text-sm">4.5 ⭐</p>
-          </div>
-        </Link>
-        <Link
-          to="/product"
-          className="shrink-0 w-[49%] xs:w-[32.5%] lg:w-[24.3%] mb-[6px] sm:mb-2 xl:mb-3 border border-black rounded-xl cursor-pointer hover:scale-[101%]"
-        >
-          <img
-            src={product_img_3}
-            alt="Something Cool"
-            className="w-full rounded-t-xl"
-          />
-          <div className="m-2 lg:m-3">
-            <p className="text-sm sm:text-base">Ceramic Mug</p>
-            <p className="text-xs sm:text-sm">₹ 699</p>
-            <p className="text-xs sm:text-sm">4.5 ⭐</p>
-          </div>
-        </Link>
-        <Link
-          to="/product"
-          className="shrink-0 w-[49%] xs:w-[32.5%] lg:w-[24.3%] mb-[6px] sm:mb-2 xl:mb-3 border border-black rounded-xl cursor-pointer hover:scale-[101%]"
-        >
-          <img
-            src={product_img_1}
-            alt="Something Cool"
-            className="w-full rounded-t-xl"
-          />
-          <div className="m-2 lg:m-3">
-            <p className="text-sm sm:text-base">Ceramic Mug</p>
-            <p className="text-xs sm:text-sm">₹ 699</p>
-            <p className="text-xs sm:text-sm">4.5 ⭐</p>
-          </div>
-        </Link>
-        <Link
-          to="/product"
-          className="shrink-0 w-[49%] xs:w-[32.5%] lg:w-[24.3%] mb-[6px] sm:mb-2 xl:mb-3 border border-black rounded-xl cursor-pointer hover:scale-[101%]"
-        >
-          <img
-            src={product_img_2}
-            alt="Something Cool"
-            className="w-full rounded-t-xl"
-          />
-          <div className="m-2 lg:m-3">
-            <p className="text-sm sm:text-base">Ceramic Mug</p>
-            <p className="text-xs sm:text-sm">₹ 699</p>
-            <p className="text-xs sm:text-sm">4.5 ⭐</p>
-          </div>
-        </Link>
-        <Link
-          to="/product"
-          className="shrink-0 w-[49%] xs:w-[32.5%] lg:w-[24.3%] mb-[6px] sm:mb-2 xl:mb-3 border border-black rounded-xl cursor-pointer hover:scale-[101%]"
-        >
-          <img
-            src={product_img_3}
-            alt="Something Cool"
-            className="w-full rounded-t-xl"
-          />
-          <div className="m-2 lg:m-3">
-            <p className="text-sm sm:text-base">Ceramic Mug</p>
-            <p className="text-xs sm:text-sm">₹ 699</p>
-            <p className="text-xs sm:text-sm">4.5 ⭐</p>
-          </div>
-        </Link>
-        <Link
-          to="/product"
-          className="shrink-0 w-[49%] xs:w-[32.5%] lg:w-[24.3%] mb-[6px] sm:mb-2 xl:mb-3 border border-black rounded-xl cursor-pointer hover:scale-[101%]"
-        >
-          <img
-            src={product_img_1}
-            alt="Something Cool"
-            className="w-full rounded-t-xl"
-          />
-          <div className="m-2 lg:m-3">
-            <p className="text-sm sm:text-base">Ceramic Mug</p>
-            <p className="text-xs sm:text-sm">₹ 699</p>
-            <p className="text-xs sm:text-sm">4.5 ⭐</p>
-          </div>
-        </Link>
-        <Link
-          to="/product"
-          className="shrink-0 w-[49%] xs:w-[32.5%] lg:w-[24.3%] mb-[6px] sm:mb-2 xl:mb-3 border border-black rounded-xl cursor-pointer hover:scale-[101%]"
-        >
-          <img
-            src={product_img_2}
-            alt="Something Cool"
-            className="w-full rounded-t-xl"
-          />
-          <div className="m-2 lg:m-3">
-            <p className="text-sm sm:text-base">Ceramic Mug</p>
-            <p className="text-xs sm:text-sm">₹ 699</p>
-            <p className="text-xs sm:text-sm">4.5 ⭐</p>
-          </div>
-        </Link>
-        <Link
-          to="/product"
-          className="shrink-0 w-[49%] xs:w-[32.5%] lg:w-[24.3%] mb-[6px] sm:mb-2 xl:mb-3 border border-black rounded-xl cursor-pointer hover:scale-[101%]"
-        >
-          <img
-            src={product_img_3}
-            alt="Something Cool"
-            className="w-full rounded-t-xl"
-          />
-          <div className="m-2 lg:m-3">
-            <p className="text-sm sm:text-base">Ceramic Mug</p>
-            <p className="text-xs sm:text-sm">₹ 699</p>
-            <p className="text-xs sm:text-sm">4.5 ⭐</p>
-          </div>
-        </Link>
+        {products.map((product, index) => (
+          <Link
+            to={`/${product.id}/${encodeURIComponent(product.title)}`}
+            key={index}
+            className="shrink-0 w-[49%] xs:w-[32.5%] lg:w-[24.3%] mb-[6px] sm:mb-2 xl:mb-3 border border-black rounded-xl cursor-pointer hover:scale-[100.5%]"
+          >
+            <img
+              src={product.imageURIs[0]}
+              alt={product.title}
+              className="w-full rounded-t-xl"
+            />
+            <div className="m-2 lg:m-3">
+              <p
+                className="text-sm sm:text-base overflow-hidden line-clamp-1"
+                title={product.title}
+              >
+                {product.title}
+              </p>
+              {product.discountedPrice ? (
+                <div className="flex my-[2px]">
+                  <p className="text-xs">
+                    ₹ {product.discountedPrice}{" "}
+                    <del className="pl-[2px] text-neutral-400">
+                      ₹ {product.price}
+                    </del>
+                  </p>
+                  <p className="ml-2 px-1 text-xs text-green-500 font-medium border border-green-500 rounded">
+                    {parseInt(
+                      100 - (product.discountedPrice / product.price) * 100
+                    )}
+                    % OFF
+                  </p>
+                </div>
+              ) : (
+                <p className="my-[2px] text-xs">₹ {product.price}</p>
+              )}
+              <p className="text-xs sm:text-sm">No Ratings⭐</p>
+            </div>
+          </Link>
+        ))}
       </div>
       <Footer />
     </div>

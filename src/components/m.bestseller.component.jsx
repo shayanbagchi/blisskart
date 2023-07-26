@@ -1,10 +1,6 @@
 import React from "react";
 
 const MBestSeller = ({ products }) => {
-  const bestsellers = products.filter((product) =>
-    product.categories.includes("Bestseller")
-  );
-
   return (
     <div className="md:hidden flex flex-col mx-4 xs:mx-6">
       <div className="ml-1 my-2">
@@ -14,7 +10,7 @@ const MBestSeller = ({ products }) => {
         </p>
       </div>
       <div className="flex flex-wrap justify-between mb-2">
-        {bestsellers.map((product) => (
+        {products.map((product) => (
           <div
             className="shrink-0 w-[49%] xs:w-[32.5%] sm:w-[32%] my-1 border border-black rounded-xl cursor-pointer"
             key={product.id}
