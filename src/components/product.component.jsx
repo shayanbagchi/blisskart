@@ -58,7 +58,7 @@ function Product({ product, bestsellers }) {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [initialLoad, windowSize]);
+  }, [initialLoad, windowSize, carouselHeight]);
 
   useLayoutEffect(() => {
     const handleCarouselResize = () => {
@@ -68,26 +68,33 @@ function Product({ product, bestsellers }) {
       }
     };
 
-    const calculateInitialHeight = () => {
+    // Function to handle content loaded
+    const handleContentLoaded = () => {
       if (carouselRef.current) {
         const initialHeight = carouselRef.current.clientHeight;
         setCarouselHeight(initialHeight);
       }
     };
 
-    calculateInitialHeight(); // Calculate the initial height on mount
+    // Check if the window is already loaded (in case the component is mounted after the window onload event)
+    if (document.readyState === "complete") {
+      handleContentLoaded();
+    } else {
+      window.addEventListener("load", handleContentLoaded);
+    }
 
     window.addEventListener("resize", handleCarouselResize);
 
     return () => {
       window.removeEventListener("resize", handleCarouselResize);
+      window.removeEventListener("load", handleContentLoaded);
     };
-  }, [carouselHeight]);
+  });
 
   return (
     <div className="hidden md:block">
       <Navbar />
-      <div className="flex mx-4 xs:mx-6 md:mx-12 lg:mx-16 font-poppins">
+      <div className="flex mx-4 xs:mx-6 md:mx-10 lg:mx-16 font-poppins">
         <div className="w-1/2 md:my-4 xl:my-6 relative" style={{ height: carouselHeight }}>
           <div className="w-5/6 relative float-right border border-neutral-400 rounded" ref={carouselRef}>
             <CarouselProvider

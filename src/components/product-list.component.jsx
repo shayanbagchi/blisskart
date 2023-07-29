@@ -18,7 +18,7 @@ function ProductList({ products, category }) {
   return (
     <div className="flex flex-col font-poppins">
       <NavBar />
-      <div className="flex justify-between items-center mb-2 md:mb-0 sm:mt-3 md:mt-4 lg:mt-6 mx-4 pl-1 xs:mx-6 md:mx-12 lg:mx-16">
+      <div className="flex justify-between items-center mb-2 md:mb-0 sm:mt-3 md:mt-4 lg:mt-6 mx-4 pl-1 xs:mx-6 md:mx-10 lg:mx-16">
         <div>
           <p className="font-semibold md:font-bold text-sm xs:text-lg md:text-2xl xl:text-3xl">
             {category}
@@ -39,7 +39,7 @@ function ProductList({ products, category }) {
           </div>
         </div>
       </div>
-      <div className="flex flex-wrap justify-between mx-4 xs:mx-6 md:mx-12 lg:mx-16 sm:my-2 md:my-4 mb-2">
+      <div className="flex flex-wrap justify-between mx-4 xs:mx-6 md:mx-10 lg:mx-16 sm:my-2 md:my-4 mb-2">
         {products.map((product, index) => (
           <Link
             to={`/${product.id}/${encodeURIComponent(product.title)}`}
