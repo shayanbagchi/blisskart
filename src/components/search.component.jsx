@@ -3,7 +3,7 @@ import { ReactComponent as SearchIcon } from "../assets/search_icon.svg";
 
 function SearchHero() {
   return (
-    <div className="flex mx-4 xs:mx-6 md:mx-16 lg:mx-24 sm:my-2 md:my-4 mb-2 bg-[url('/src/assets/sm_hero_img.webp')] bg-cover rounded-2xl"> {/*lg:bg-gradient-to-r from-magic to-transparent*/}
+    <div className="flex mx-4 xs:mx-6 md:mx-12 lg:mx-16 sm:my-2 md:my-4 mb-2 bg-[url('/src/assets/sm_hero_img.webp')] bg-cover rounded-2xl"> {/*lg:bg-gradient-to-r from-magic to-transparent*/}
       <div className="flex flex-col justify-center w-full mx-6 md:mx-0 md:ml-12 my-6 md:my-20">
         <p className="text-2xl md:text-4xl xl:text-6xl text-slate-700 font-extrabold">
           Buy the <br/> best suprise

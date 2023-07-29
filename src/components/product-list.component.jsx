@@ -18,7 +18,7 @@ function ProductList({ products, category }) {
   return (
     <div className="flex flex-col font-poppins">
       <NavBar />
-      <div className="flex justify-between items-center mb-2 md:mb-0 sm:mt-3 md:mt-4 lg:mt-6 mx-4 pl-1 xs:mx-6 md:mx-16 lg:mx-24">
+      <div className="flex justify-between items-center mb-2 md:mb-0 sm:mt-3 md:mt-4 lg:mt-6 mx-4 pl-1 xs:mx-6 md:mx-12 lg:mx-16">
         <div>
           <p className="font-semibold md:font-bold text-sm xs:text-lg md:text-2xl xl:text-3xl">
             {category}
@@ -39,7 +39,7 @@ function ProductList({ products, category }) {
           </div>
         </div>
       </div>
-      <div className="flex flex-wrap justify-between mx-4 xs:mx-6 md:mx-16 lg:mx-24 sm:my-2 md:my-4 mb-2">
+      <div className="flex flex-wrap justify-between mx-4 xs:mx-6 md:mx-12 lg:mx-16 sm:my-2 md:my-4 mb-2">
         {products.map((product, index) => (
           <Link
             to={`/${product.id}/${encodeURIComponent(product.title)}`}
@@ -59,14 +59,14 @@ function ProductList({ products, category }) {
                 {product.title}
               </p>
               {product.discountedPrice ? (
-                <div className="flex my-[2px]">
-                  <p className="text-xs">
+                <div className="flex items-center my-[2px]">
+                  <p className="text-[10px] sm:text-sm ">
                     ₹ {product.discountedPrice}{" "}
                     <del className="pl-[2px] text-neutral-400">
                       ₹ {product.price}
                     </del>
                   </p>
-                  <p className="ml-2 px-1 text-xs text-green-500 font-medium border border-green-500 rounded">
+                  <p className="ml-1 xs:ml-2 px-1 text-[10px] sm:text-sm text-green-500 font-medium border border-green-500 rounded">
                     {parseInt(
                       100 - (product.discountedPrice / product.price) * 100
                     )}
@@ -74,7 +74,7 @@ function ProductList({ products, category }) {
                   </p>
                 </div>
               ) : (
-                <p className="my-[2px] text-xs">₹ {product.price}</p>
+                <p className="my-[2px] text-[10px] sm:text-sm">₹ {product.price}</p>
               )}
               <p className="text-xs sm:text-sm">No Ratings⭐</p>
             </div>

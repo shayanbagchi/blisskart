@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
+import { ReactComponent as HeartIcon } from "../assets/heart_icon.svg";
+import { ReactComponent as BagIcon } from "../assets/bag_icon.svg";
 import Navbar from "./navbar.component";
 import {
   CarouselProvider,
@@ -14,14 +16,80 @@ import { ReactComponent as LeftIcon } from "../assets/left_icon.svg";
 import { ReactComponent as RightIcon } from "../assets/right_icon.svg";
 import Footer from "./footer.component";
 import { Link } from "react-router-dom";
+import ProductTabs from "./productTabs.component";
 
 function Product({ product, bestsellers }) {
+  const [visibleSlides, setVisibleSlides] = useState("");
+  const [initialLoad, setInitialLoad] = useState(true);
+
+  const [carouselHeight, setCarouselHeight] = useState(0);
+  const carouselRef = useRef(null);
+
+  const windowSize = useRef([window.innerWidth, window.innerHeight]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const [width] = windowSize.current;
+      const newWidth = window.innerWidth;
+
+      if (width < 1024 && newWidth >= 1024) {
+        setVisibleSlides("4");
+      } else if (width >= 1024 && newWidth < 1024) {
+        setVisibleSlides("4");
+      }
+
+      windowSize.current = [newWidth, window.innerHeight];
+    };
+
+    // Calculate the initial visibleSlides value based on screen size
+    if (initialLoad) {
+      const currentWidth = window.innerWidth;
+      if (currentWidth >= 1024) {
+        setVisibleSlides("4");
+      } else {
+        setVisibleSlides("3");
+      }
+
+      setInitialLoad(false); // Set initialLoad to false after the calculation
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [initialLoad, windowSize]);
+
+  useLayoutEffect(() => {
+    const handleCarouselResize = () => {
+      if (carouselRef.current) {
+        const newHeight = carouselRef.current.clientHeight;
+        setCarouselHeight(newHeight);
+      }
+    };
+
+    const calculateInitialHeight = () => {
+      if (carouselRef.current) {
+        const initialHeight = carouselRef.current.clientHeight;
+        setCarouselHeight(initialHeight);
+      }
+    };
+
+    calculateInitialHeight(); // Calculate the initial height on mount
+
+    window.addEventListener("resize", handleCarouselResize);
+
+    return () => {
+      window.removeEventListener("resize", handleCarouselResize);
+    };
+  }, [carouselHeight]);
+
   return (
-    <div>
+    <div className="hidden md:block">
       <Navbar />
-      <div className="hidden md:flex mx-4 xs:mx-6 md:mx-16 lg:mx-24">
-        <div className="w-1/2 md:my-4 xl:my-6">
-          <div className="w-5/6 relative float-right border border-neutral-400 rounded">
+      <div className="flex mx-4 xs:mx-6 md:mx-12 lg:mx-16 font-poppins">
+        <div className="w-1/2 md:my-4 xl:my-6 relative" style={{ height: carouselHeight }}>
+          <div className="w-5/6 relative float-right border border-neutral-400 rounded" ref={carouselRef}>
             <CarouselProvider
               visibleSlides={1}
               totalSlides={product.imageURIs.length} // Update this to the total number of images
@@ -56,13 +124,69 @@ function Product({ product, bestsellers }) {
             </CarouselProvider>
           </div>
         </div>
-        <div className="w-1/2">{/* Add code here */}</div>
+
+        <div className="w-1/2 md:my-4 xl:my-6" style={{ height: carouselHeight }}>
+          <div className="flex flex-col h-full md:pl-6 lg:pl-8">
+            <div className="h-[90%] overflow-y-auto no-scrollbar">
+              <h2
+                className="md:text-lg lg:text-xl xl:text-2xl font-bold line-clamp-2"
+                title={product.title}
+              >
+                {product.title}
+              </h2>
+              <p className="text-sm lg:text-base lg:mt-2 md:mb-1 lg:mb-2 xl:mb-4">No Ratings ⭐</p>
+
+              <div className="border-b border-neutral-300" />
+
+              {product.discountedPrice ? (
+                <div className="flex items-center md:my-1 lg:my-2 xl:my-4">
+                  <p className="md:text-sm lg:text-lg xl:text-xl">
+                    <span className="text-red-500 font-semibold">
+                      ₹ {product.discountedPrice}
+                    </span>{" "}
+                    <del className="pl-[2px] text-neutral-400">
+                      ₹ {product.price}
+                    </del>
+                  </p>
+                  <p className="ml-3 px-1 md:text-sm lg:text-lg xl:text-xl text-green-500 md:font-medium lg:font-semibold border border-green-500 rounded">
+                    {parseInt(
+                      100 - (product.discountedPrice / product.price) * 100
+                    )}
+                    % OFF
+                  </p>
+                </div>
+              ) : (
+                <p className="py-1 md:text-sm lg:text-lg xl:text-xl text-red-500 font-semibold">
+                  ₹ {product.price}
+                </p>
+              )}
+
+              <div className="border-b border-neutral-300" />
+
+              <ProductTabs product={product} />
+
+              <div className="border-b border-neutral-300" />
+            </div>
+            <div className="flex justify-evenly w-full h-[10%] mt-1">
+              <button className="w-[48%] md:py-1 lg:py-2 lg:px-2 md:text-xs lg:text-base xl:text-lg text-neutral-700 bg-gray-100 hover:bg-gray-200 rounded-full">
+                <span className="flex justify-center items-center hover:scale-[101%]">
+                  ADD TO WISHLIST <HeartIcon className="w-4 h-4 xl:w-6 xl:h-6 md:ml-1 lg:ml-2" fill="#e55e74" />
+                </span>
+              </button>
+              <button className="w-[48%] md:py-1 lg:py-2 lg:px-2 md:text-xs lg:text-base xl:text-lg text-white bg-magic-600 hover:bg-magic-800 py-2 px-2 rounded-full">
+                <span className="flex justify-center hover:scale-[101%]">
+                  ADD TO CART <BagIcon className="w-4 h-4 xl:w-6 xl:h-6 md:ml-1 lg:ml-2" /> 
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="hidden md:block md:mx-16 lg:mx-24 border-b border-black"></div>
+      <div className="md:mx-12 lg:mx-16 border-b border-neutral-300"></div>
 
-      <div className="hidden md:block md:mx-16 lg:mx-24 md:my-4 xl:my-6">
-        <p className="hidden md:block text-center my-4 xl:my-6 font-semibold md:font-bold xs:text-lg md:text-2xl xl:text-3xl">
+      <div className="md:mx-12 lg:mx-16 md:my-4 xl:my-6">
+        <p className="text-center my-4 xl:my-6 font-semibold md:font-bold text-slate-800 xs:text-lg md:text-2xl xl:text-3xl">
           Recommended For You
         </p>
 
@@ -72,7 +196,7 @@ function Product({ product, bestsellers }) {
           naturalSlideHeight={1}
           isIntrinsicHeight={true}
           totalSlides={bestsellers.length}
-          visibleSlides={4}
+          visibleSlides={visibleSlides}
           step={3}
           infinite={true}
         >
@@ -98,7 +222,7 @@ function Product({ product, bestsellers }) {
                   />
                   <div className="md:m-2 lg:m-3">
                     <p
-                      className="overflow-hidden line-clamp-1"
+                      className="md:text-sm lg-text-base overflow-hidden line-clamp-1"
                       title={product.title}
                     >
                       {product.title}
@@ -106,12 +230,12 @@ function Product({ product, bestsellers }) {
                     {product.discountedPrice ? (
                       <div className="flex my-[2px]">
                         <p className="text-xs">
-                          ₹ {product.discountedPrice}{" "}
-                          <del className="pl-[2px] text-neutral-400">
+                          ₹ {product.discountedPrice}
+                          <del className="pl-1 text-neutral-400">
                             ₹ {product.price}
                           </del>
                         </p>
-                        <p className="ml-2 px-1 text-xs text-green-500 font-medium border border-green-500 rounded">
+                        <p className="md:ml-1 lg:ml-2 px-1 text-xs text-green-500 font-medium border border-green-500 rounded">
                           {parseInt(
                             100 -
                               (product.discountedPrice / product.price) * 100

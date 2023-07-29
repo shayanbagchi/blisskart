@@ -13,8 +13,12 @@ module.exports = {
         logo: ["Itim", "sans-serif"]
       },
       colors: {
-        'magic': '#C1DCDC',
-        'link-blue': '#346BD4',
+        'magic':{
+          500: '#C1DCDC',
+          600: '#8BC5C6',
+          700: '#80BABB',
+          800: '#639C9D',
+        }, 
       },
     },
   },

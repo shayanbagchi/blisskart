@@ -290,9 +290,9 @@ const ProductUpload = () => {
           </form>
         </div>
       </div>
-      <div className="mx-4 xs:mx-6 md:mx-16 lg:mx-24 border-b border-black" />
+      <div className="mx-4 xs:mx-6 md:mx-12 lg:mx-16 border-b border-black" />
       <ProductUpdate fetchProductsData={fetchProductsData}/>
-      <div className="mx-4 xs:mx-6 md:mx-16 lg:mx-24 border-b border-black" />
+      <div className="mx-4 xs:mx-6 md:mx-12 lg:mx-16 border-b border-black" />
       <ProductList products={products} />
     </div>
   );
