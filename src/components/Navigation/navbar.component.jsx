@@ -1,15 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Logo from "../assets/blisskart.png";
-import { ReactComponent as SearchIcon } from "../assets/search_icon.svg";
-import { ReactComponent as HeartIcon } from "../assets/heart_icon.svg";
-import { ReactComponent as CartIcon } from "../assets/cart_icon.svg";
-import { ReactComponent as ProfileIcon } from "../assets/profile_icon.svg";
+import Logo from "../../assets/blisskart.png";
+import { ReactComponent as SearchIcon } from "../../assets/search_icon.svg";
+import { ReactComponent as HeartIcon } from "../../assets/heart_icon.svg";
+import { ReactComponent as CartIcon } from "../../assets/cart_icon.svg";
+import { ReactComponent as ProfileIcon } from "../../assets/profile_icon.svg";
 
-function NavBar() {
+const NavBar = () => {
   return (
     <>
-      <div className="flex justify-between items-center mx-4 xs:mx-6 md:mx-10 lg:mx-16 mt-6 mb-4">
+      <div className="md:sticky top-0 flex justify-between items-center px-4 xs:px-6 md:px-10 lg:px-16 pt-4 pb-2 bg-white border-b border-neutral-300 shadow-sm z-20">
         <Link to="/">
           <span className="font-logo text-3xl">
             <img src={Logo} alt="BlissKart" className="h-8 lg:h-10" />
@@ -33,12 +33,12 @@ function NavBar() {
           <span className="cursor-pointer" title="Cart">
             <CartIcon />
           </span>
-          <span className="cursor-pointer" title="Account">
+          <Link to="/user" className="cursor-pointer" title="Account">
             <ProfileIcon />
-          </span>
+          </Link>
         </div>
       </div>
-      <div className="mx-4 xs:mx-6 md:mx-10 lg:mx-16 border-b border-neutral-300"></div>
+
       <div className="flex sm:hidden justify-between items-center mx-4 xs:mx-6 my-4 border border-neutral-500 rounded-3xl focus-within:border-black focus-within:scale-[101%] transform transition-transform">
         <input
           className="appearance-none w-3/4 sm:w-[320px] lg:w-[384px] ml-4 focus:outline-none placeholder:text-sm md:placeholder:text-base"

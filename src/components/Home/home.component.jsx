@@ -1,10 +1,10 @@
 import React from "react";
-import Navbar from './navbar.component'
-import SearchHero from './search.component'
-import Catagories from './catagories.component'
-import BestSeller from './bestseller.component'
-import MBestSeller from './m.bestseller.component'
-import Footer from './footer.component'
+import Navbar from '../Navigation/navbar.component'
+import SearchHero from '../Home/search.component'
+import Catagories from '../Home/catagories.component'
+import BestSeller from '../Home/bestseller.component'
+import MBestSeller from '../Home/m.bestseller.component'
+import Footer from '../Footer/footer.component'
 
 const Home = ({products}) => {
   return (

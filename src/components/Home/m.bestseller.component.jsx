@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const MBestSeller = ({ products }) => {
   return (
@@ -10,10 +11,11 @@ const MBestSeller = ({ products }) => {
         </p>
       </div>
       <div className="flex flex-wrap justify-between mb-2">
-        {products.map((product) => (
-          <div
+        {products.map((product, index) => (
+          <Link
             className="shrink-0 w-[49%] xs:w-[32.5%] sm:w-[32%] my-1 border border-black rounded-xl cursor-pointer"
-            key={product.id}
+            to={`/${product.id}/${encodeURIComponent(product.title)}`}
+            key={index}
           >
             <img
               src={product.imageURIs[0]}
@@ -46,7 +48,7 @@ const MBestSeller = ({ products }) => {
               )}
               <p className="text-xs">No Ratings ⭐</p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

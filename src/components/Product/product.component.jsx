@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
-import { ReactComponent as HeartIcon } from "../assets/heart_icon.svg";
-import { ReactComponent as BagIcon } from "../assets/bag_icon.svg";
-import Navbar from "./navbar.component";
+import { ReactComponent as HeartIcon } from "../../assets/heart_icon.svg";
+import { ReactComponent as BagIcon } from "../../assets/bag_icon.svg";
+import Navbar from "../Navigation/navbar.component";
 import {
   CarouselProvider,
   Slider,
@@ -12,9 +12,9 @@ import {
   Image,
 } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
-import { ReactComponent as LeftIcon } from "../assets/left_icon.svg";
-import { ReactComponent as RightIcon } from "../assets/right_icon.svg";
-import Footer from "./footer.component";
+import { ReactComponent as LeftIcon } from "../../assets/left_icon.svg";
+import { ReactComponent as RightIcon } from "../../assets/right_icon.svg";
+import Footer from "../Footer/footer.component";
 import { Link } from "react-router-dom";
 import ProductTabs from "./productTabs.component";
 

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { fetchProducts } from "./utils/firebase.util";
 import { Route, Routes, useParams, useLocation } from "react-router-dom";
-import Home from "./components/home.component";
-import ProductList from "./components/product-list.component";
-import Product from "./components/product.component";
+import Home from "./components/Home/home.component";
+import ProductList from "./components/Product-List/product-list.component";
+import Product from "./components/Product/product.component";
 import ProductUpload from "./components/admin/productUpload.admin";
+import User from "./components/Account/user.component";
 
 // Mapping object for URL parameters and category names
 const categoryMapping = {
@@ -45,6 +46,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Home products={bestsellers} />} />
+      <Route path="/user" element={<User/>}/>
       <Route path="/:categoryName" element={<CategoryProducts products={products} />} />
       <Route path="/:productId/:productTitle" element={<ProductDetails products={products} bestsellers={bestsellers}/>} />
       <Route path="/admin" element={<ProductUpload />} />

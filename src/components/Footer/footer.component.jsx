@@ -1,7 +1,7 @@
 import React from "react";
-import Logo from "../assets/blisskart.png";
-import { ReactComponent as Facebook } from "../assets/gg_facebook.svg";
-import { ReactComponent as Instagram } from "../assets/ri_instagram.svg";
+import Logo from "../../assets/blisskart.png";
+import { ReactComponent as Facebook } from "../../assets/gg_facebook.svg";
+import { ReactComponent as Instagram } from "../../assets/ri_instagram.svg";
 
 function Footer() {
   return (

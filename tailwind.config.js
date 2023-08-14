@@ -14,9 +14,10 @@ module.exports = {
       },
       colors: {
         'magic':{
+          200: '#d9eaeb',
+          400: '#99b5ba',
           500: '#C1DCDC',
           600: '#8BC5C6',
-          700: '#80BABB',
           800: '#639C9D',
         }, 
       },

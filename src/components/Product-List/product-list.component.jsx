@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import NavBar from "./navbar.component";
-import Footer from "./footer.component";
-import { ReactComponent as SortIcon } from "../assets/sort_icon.svg";
+import NavBar from "../Navigation/navbar.component";
+import Footer from "../Footer/footer.component";
+import { ReactComponent as SortIcon } from "../../assets/sort_icon.svg";
 import Dropdown from "./dropdown.component";
 
 function ProductList({ products, category }) {
