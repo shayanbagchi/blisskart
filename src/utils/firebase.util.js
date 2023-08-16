@@ -1,4 +1,14 @@
 import { initializeApp } from "firebase/app";
+import { 
+  getAuth, 
+  // signInWithRedirect, 
+  signInWithPopup, 
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "firebase/auth";
 import {
   getFirestore,
   collection,
@@ -6,6 +16,7 @@ import {
   addDoc,
   getDoc,
   getDocs,
+  setDoc,
   updateDoc,
   arrayRemove,
   arrayUnion,
@@ -30,9 +41,74 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
+const provider = new GoogleAuthProvider();
+
+provider.setCustomParameters({
+  prompt: "select_account"
+})
+
+export const auth = getAuth();
+
 const db = getFirestore(app);
 
 const storage = getStorage();
+
+export const createUserDocFromAuth = async (userAuth, additionalInfo = {}) => {
+  if (!userAuth || !userAuth.uid) {
+    return; // Exit early if userAuth or uid is missing
+  }
+
+  const userData = doc(db, 'users', userAuth.uid);
+
+  const userSnapshot = await getDoc(userData);
+
+  if(!userSnapshot.exists()){
+    const { displayName, email } = userAuth;
+    const createdAt = new Date();
+
+    try {
+      await setDoc(userData,{
+        displayName,
+        email,
+        createdAt,
+        ...additionalInfo
+      });
+    } catch (error) {
+      console.log('Error creating the user', error.message);
+    }
+  }
+
+  return userData;
+};
+
+export const signInWithGooglePopup = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    // Call the function to create a user document
+    await createUserDocFromAuth(user);
+    
+  } catch (error) {
+    console.error('Error signing in with Google:', error);
+  }
+};
+
+export const signInUserWithEmailAndPassword = async (email, password) => {
+  if(!email || !password) return;
+
+  return await signInWithEmailAndPassword(auth, email, password);
+}
+
+export const registerUserWithEmailAndPassword = async (email, password) => {
+  if(!email || !password) return;
+
+  return await createUserWithEmailAndPassword(auth, email, password);
+}
+
+export const onAuthStateChangedListener = (callback) => {
+  return onAuthStateChanged(auth, callback);
+}
 
 export const addProduct = async () => {
   try {
@@ -55,6 +131,23 @@ export const getFileDownloadURL = async (docID, fileName) => {
   return downloadURL;
 };
 
+export const fetchUser = async (uid) => {
+  try {
+    const userRef = doc(db, 'users', uid);
+    const userSnapshot = await getDoc(userRef);
+
+    if (userSnapshot.exists()) {
+      return userSnapshot.data();
+    } else {
+      console.log('User not found');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    return null;
+  }
+}
+ 
 export const fetchProducts = async () => {
   try {
     const querySnapshot = await getDocs(collection(db, "products"));
