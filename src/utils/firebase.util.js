@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { 
   getAuth, 
-  // signInWithRedirect, 
   signInWithPopup, 
   GoogleAuthProvider,
   signInWithEmailAndPassword,
@@ -53,7 +52,7 @@ const db = getFirestore(app);
 
 const storage = getStorage();
 
-export const createUserDocFromAuth = async (userAuth, additionalInfo = {}) => {
+export const createUserDocFromAuth = async (userAuth) => {
   if (!userAuth || !userAuth.uid) {
     return; // Exit early if userAuth or uid is missing
   }
@@ -63,15 +62,16 @@ export const createUserDocFromAuth = async (userAuth, additionalInfo = {}) => {
   const userSnapshot = await getDoc(userData);
 
   if(!userSnapshot.exists()){
-    const { displayName, email } = userAuth;
+    const { displayName, email, uid } = userAuth;
     const createdAt = new Date();
 
     try {
       await setDoc(userData,{
+        uid,
         displayName,
         email,
-        createdAt,
-        ...additionalInfo
+        wishlist: [],
+        createdAt
       });
     } catch (error) {
       console.log('Error creating the user', error.message);
@@ -131,7 +131,7 @@ export const getFileDownloadURL = async (docID, fileName) => {
   return downloadURL;
 };
 
-export const fetchUser = async (uid) => {
+export const fetchUserData = async (uid) => {
   try {
     const userRef = doc(db, 'users', uid);
     const userSnapshot = await getDoc(userRef);
@@ -159,6 +159,49 @@ export const fetchProducts = async () => {
   } catch (error) {
     console.error("Error fetching products:", error);
     return [];
+  }
+};
+
+export const addToWishlist = async (userId, productId) => {
+  try {
+    const userRef = doc(db, "users", userId);
+
+    // Fetch the user document
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+
+      // Check if the wishlist field exists in the user data
+      if (!userData.wishlist) {
+        userData.wishlist = []; // Initialize the wishlist as an empty array
+      }
+
+      // Add the product ID to the wishlist array
+      const updatedWishlist = [...userData.wishlist, productId];
+
+      // Update the user document with the modified wishlist
+      await updateDoc(userRef, { wishlist: updatedWishlist });
+
+      console.log("Product added to wishlist");
+    } else {
+      console.log("User document does not exist.");
+    }
+  } catch (error) {
+    console.error("Error adding to wishlist:", error);
+  }
+};
+
+
+export const removeFromWishlist = async (userId, productId) => {
+  try {
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+      wishlist: arrayRemove(productId)
+    });
+    console.log("Product removed from wishlist");
+  } catch (error) {
+    console.error("Error removing from wishlist:", error);
   }
 };
 

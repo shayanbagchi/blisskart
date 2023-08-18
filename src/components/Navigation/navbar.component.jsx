@@ -7,31 +7,21 @@ import { ReactComponent as CartIcon } from "../../assets/cart_icon.svg";
 import { ReactComponent as UserIcon } from "../../assets/profile_icon.svg";
 import { ReactComponent as Bulge } from "../../assets/top-buldge.svg";
 import { ReactComponent as Logout } from "../../assets/Icon-Logout.svg";
-import { auth, fetchUser } from "../../utils/firebase.util";
+import { auth } from "../../utils/firebase.util";
 import { signOut } from "firebase/auth";
 
-const NavBar = () => {
-  const [user, setUser] = useState(null);
-  const [userData, setUserData] = useState(null);
+const NavBar = ({ userData, setUserData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [initials, setInitials] = useState('');
-  
+  const [initials, setInitials] = useState("");
+
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user);
-    });
-
-    if(auth.currentUser){
-      fetchUser(auth.currentUser.uid)
-      .then((userData) => {
-        setInitials(userData.displayName.charAt(0).toUpperCase());
-        setUserData(userData);
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      });
+    if (userData) {
+      setInitials(userData.displayName.charAt(0).toUpperCase());
+      console.log('Nav: ' + userData.displayName);
     }
+  }, [userData]);
 
+  useEffect(() => {
     if (isModalOpen) {
       // Disable scrolling when modal is open
       document.body.style.overflow = "hidden";
@@ -41,7 +31,6 @@ const NavBar = () => {
     }
 
     return () => {
-      unsubscribe();
       // Make sure to restore scrolling when the component is unmounted
       document.body.style.overflow = "auto";
     };
@@ -49,6 +38,8 @@ const NavBar = () => {
 
   const signOutUser = () => {
     signOut(auth);
+    setUserData(null);
+    console.log("Sign Out: " + auth.currentUser.displayName);
     setIsModalOpen(false);
   };
 
@@ -72,9 +63,9 @@ const NavBar = () => {
           </span>
         </div>
         <div className="h-full flex justify-between items-center w-24 lg:w-32">
-          <span className="cursor-pointer">
+          <Link to="/wishlist" className="cursor-pointer">
             <HeartIcon className="w-6 h-6" title="Wishlist" />
-          </span>
+          </Link>
           <span className="cursor-pointer" title="Cart">
             <CartIcon />
           </span>
@@ -83,7 +74,7 @@ const NavBar = () => {
             title="Account"
             onClick={() => setIsModalOpen(!isModalOpen)}
           >
-            {user ? (
+            {userData ? (
               <span className="flex items-center justify-center w-7 h-7 border-2 border-black rounded-full bg-neutral-100 text-black">
                 {initials}
               </span>
@@ -94,8 +85,8 @@ const NavBar = () => {
         </div>
       </div>
 
-      {isModalOpen && !user && (
-        <div className="absolute top-16 right-8 flex items-center justify-center drop-shadow-[0_4px_24px_rgba(0,0,0,0.24)] z-50">
+      {isModalOpen && !userData && (
+        <div className="fixed top-16 right-8 flex items-center justify-center drop-shadow-[0_4px_24px_rgba(0,0,0,0.24)] z-50">
           <div className="relative bg-white p-8 rounded-md">
             <Bulge className="absolute top-[-10px] right-6" />
             <p className="font-semibold mb-1">Welcome!</p>
@@ -112,8 +103,8 @@ const NavBar = () => {
         </div>
       )}
 
-      {isModalOpen && user && (
-        <div className="absolute top-16 right-8 flex items-center justify-center drop-shadow-[0_4px_24px_rgba(0,0,0,0.24)] z-50">
+      {isModalOpen && userData && (
+        <div className="fixed top-16 right-8 flex items-center justify-center drop-shadow-[0_4px_24px_rgba(0,0,0,0.24)] z-50">
           <div className="relative bg-white p-4 rounded-md">
             <Bulge className="absolute top-[-10px] right-7" />
             <div className="flex items-center">
@@ -121,7 +112,9 @@ const NavBar = () => {
                 {initials}
               </span>
               <div className="ml-2">
-                <p className="font-medium tracking-tight">{userData.displayName}</p>
+                <p className="font-medium tracking-tight">
+                  {userData.displayName}
+                </p>
                 <p className="text-gray-500 text-xs">{userData.email}</p>
               </div>
             </div>

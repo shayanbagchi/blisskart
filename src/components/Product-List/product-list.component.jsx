@@ -5,7 +5,7 @@ import Footer from "../Footer/footer.component";
 import { ReactComponent as SortIcon } from "../../assets/sort_icon.svg";
 import Dropdown from "./dropdown.component";
 
-function ProductList({ products, category }) {
+function ProductList({ products, category, userData, setUserData }) {
   // const handleOptionSelect = (option) => {
   //   // Logic to handle selected option in parent component
   //   console.log('Selected Option:', option);
@@ -17,7 +17,7 @@ function ProductList({ products, category }) {
 
   return (
     <div className="flex flex-col font-poppins">
-      <NavBar />
+      <NavBar userData={userData} setUserData={setUserData} />
       <div className="flex justify-between items-center mb-2 md:mb-0 sm:mt-3 md:mt-4 lg:mt-6 mx-4 pl-1 xs:mx-6 md:mx-10 lg:mx-16">
         <div>
           <p className="font-semibold md:font-bold text-sm xs:text-lg md:text-2xl xl:text-3xl">
