@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ReactComponent as HeartIcon } from "../../assets/heart_icon.svg";
 import { ReactComponent as BagIcon } from "../../assets/bag_icon.svg";
 import Navbar from "../Navigation/navbar.component";
@@ -16,7 +16,6 @@ import "pure-react-carousel/dist/react-carousel.es.css";
 import { ReactComponent as LeftIcon } from "../../assets/left_icon.svg";
 import { ReactComponent as RightIcon } from "../../assets/right_icon.svg";
 import Footer from "../Footer/footer.component";
-import { Link, Navigate } from "react-router-dom";
 import ProductTabs from "./productTabs.component";
 import {
   fetchUserData,
@@ -33,7 +32,7 @@ function Product({ userData, setUserData, product, bestsellers }) {
   const [visibleSlides, setVisibleSlides] = useState("");
   const [initialLoad, setInitialLoad] = useState(true);
 
-  const [carouselHeight, setCarouselHeight] = useState(285);
+  const [carouselHeight, setCarouselHeight] = useState();
   const carouselRef = useRef(null);
 
   const windowSize = useRef([window.innerWidth, window.innerHeight]);
@@ -79,38 +78,64 @@ function Product({ userData, setUserData, product, bestsellers }) {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [initialLoad, windowSize, carouselHeight]);
+  }, [initialLoad, windowSize]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const handleCarouselResize = () => {
       if (carouselRef.current) {
-        const newHeight = carouselRef.current.clientHeight;
-        setCarouselHeight(newHeight);
+        const images = carouselRef.current.getElementsByTagName('img');
+        
+        const imageLoadPromises = Array.from(images).map(img =>
+          new Promise(resolve => {
+            img.addEventListener('load', () => {
+              resolve(img.clientHeight);
+            });
+          })
+        );
+        
+        Promise.all(imageLoadPromises).then(heights => {
+          const newHeight = Math.max(...heights);
+          setCarouselHeight(newHeight);
+          // console.log('Run: handleCarouselResize - ' + newHeight);
+        });
       }
     };
-
-    // Function to handle content loaded
+  
     const handleContentLoaded = () => {
       if (carouselRef.current) {
-        const initialHeight = carouselRef.current.clientHeight;
-        setCarouselHeight(initialHeight);
+        const images = carouselRef.current.getElementsByTagName('img');
+        
+        const imageLoadPromises = Array.from(images).map(img =>
+          new Promise(resolve => {
+            img.addEventListener('load', () => {
+              resolve(img.clientHeight);
+            });
+          })
+        );
+        
+        Promise.all(imageLoadPromises).then(heights => {
+          const initialHeight = Math.max(...heights);
+          setCarouselHeight(initialHeight);
+          // console.log('Run: handleContentLoaded - ' + initialHeight);
+        });
       }
     };
-
-    // Check if the window is already loaded (in case the component is mounted after the window onload event)
-    if (document.readyState === "complete") {
+  
+    if (document.readyState === 'complete') {
       handleContentLoaded();
     } else {
-      window.addEventListener("load", handleContentLoaded);
+      window.addEventListener('load', handleContentLoaded);
     }
-
-    window.addEventListener("resize", handleCarouselResize);
-
+  
+    window.addEventListener('resize', handleCarouselResize);
+  
     return () => {
-      window.removeEventListener("resize", handleCarouselResize);
-      window.removeEventListener("load", handleContentLoaded);
+      window.removeEventListener('resize', handleCarouselResize);
+      window.removeEventListener('load', handleContentLoaded);
     };
-  });
+  }, []);
+  
+  
 
   const addItemToWishlist = async () => {
     await addToWishlist(userData.uid, product.id);
@@ -160,7 +185,7 @@ function Product({ userData, setUserData, product, bestsellers }) {
           style={{ height: carouselHeight }}
         >
           <div
-            className="w-5/6 relative float-right border border-neutral-400 rounded"
+            className="w-5/6 relative float-right p-[2px] border border-neutral-400 rounded"
             ref={carouselRef}
           >
             <CarouselProvider
@@ -177,7 +202,7 @@ function Product({ userData, setUserData, product, bestsellers }) {
                       <img
                         src={imageURI}
                         alt={product.title}
-                        className="w-full"
+                        className="w-full rounded"
                       />
                     </div>
                   </Slide>

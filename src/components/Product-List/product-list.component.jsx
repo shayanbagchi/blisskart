@@ -39,6 +39,7 @@ function ProductList({ products, category, userData, setUserData }) {
           </div>
         </div>
       </div>
+      <div className="xs:mx-6 md:mx-10 lg:mx-16 m-4 border border-neutral-200"/>
       <div className="flex flex-wrap justify-between mx-4 xs:mx-6 md:mx-10 lg:mx-16 sm:my-2 md:my-4 mb-2">
         {products.map((product, index) => (
           <Link

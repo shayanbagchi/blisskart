@@ -41,7 +41,10 @@ function App() {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setUser(user);
-      console.log("Unsubscribe: " + user);
+
+      let name = user ? (user.displayName) : '';
+      console.log("Unsubscribe: " + name);
+
     });
 
     return () => {
@@ -54,7 +57,10 @@ function App() {
       fetchUserData(user.uid)
         .then((userData) => {
           setUserData(userData);
-          console.log("App: " + userData.displayName);
+
+          let name = user ? (user.displayName) : '';
+          console.log("App: " + name);
+          
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
