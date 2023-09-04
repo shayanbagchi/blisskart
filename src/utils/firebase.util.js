@@ -1,12 +1,12 @@
 import { initializeApp } from "firebase/app";
-import { 
-  getAuth, 
-  signInWithPopup, 
+import {
+  getAuth,
+  signInWithPopup,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
 } from "firebase/auth";
 import {
   getFirestore,
@@ -43,8 +43,8 @@ const app = initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider();
 
 provider.setCustomParameters({
-  prompt: "select_account"
-})
+  prompt: "select_account",
+});
 
 export const auth = getAuth();
 
@@ -52,29 +52,30 @@ const db = getFirestore(app);
 
 const storage = getStorage();
 
-export const createUserDocFromAuth = async (userAuth) => {
+export const createUserDocFromAuth = async (userAuth, displayName) => {
   if (!userAuth || !userAuth.uid) {
     return; // Exit early if userAuth or uid is missing
   }
 
-  const userData = doc(db, 'users', userAuth.uid);
+  const userData = doc(db, "users", userAuth.uid);
 
   const userSnapshot = await getDoc(userData);
 
-  if(!userSnapshot.exists()){
-    const { displayName, email, uid } = userAuth;
+  if (!userSnapshot.exists()) {
+    const { email, uid } = userAuth;
     const createdAt = new Date();
 
     try {
-      await setDoc(userData,{
+      await setDoc(userData, {
         uid,
-        displayName,
+        displayName: displayName || userAuth.displayName, // Use the provided displayName or set to null
         email,
         wishlist: [],
-        createdAt
+        cart: [],
+        createdAt,
       });
     } catch (error) {
-      console.log('Error creating the user', error.message);
+      console.log("Error creating the user", error.message);
     }
   }
 
@@ -88,27 +89,41 @@ export const signInWithGooglePopup = async () => {
 
     // Call the function to create a user document
     await createUserDocFromAuth(user);
-    
+
   } catch (error) {
-    console.error('Error signing in with Google:', error);
+    console.error("Error signing in with Google:", error);
   }
 };
 
 export const signInUserWithEmailAndPassword = async (email, password) => {
-  if(!email || !password) return;
+  if (!email || !password) return;
 
   return await signInWithEmailAndPassword(auth, email, password);
-}
+};
 
-export const registerUserWithEmailAndPassword = async (email, password) => {
-  if(!email || !password) return;
+export const registerUserWithEmailAndPassword = async (displayName, email, password) => {
+  if (!email || !password) return;
 
-  return await createUserWithEmailAndPassword(auth, email, password);
-}
+  try {
+    // Register the user with email and password
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+    // Access the user object from the userCredential
+    const user = userCredential.user;
+
+    // Call the function to create a user document
+    await createUserDocFromAuth(user, displayName);
+
+    return userCredential; // Return the user object if needed
+
+  } catch (error) {
+    console.error("Error registering user:", error);
+  }
+};
 
 export const onAuthStateChangedListener = (callback) => {
   return onAuthStateChanged(auth, callback);
-}
+};
 
 export const addProduct = async () => {
   try {
@@ -133,21 +148,21 @@ export const getFileDownloadURL = async (docID, fileName) => {
 
 export const fetchUserData = async (uid) => {
   try {
-    const userRef = doc(db, 'users', uid);
+    const userRef = doc(db, "users", uid);
     const userSnapshot = await getDoc(userRef);
 
     if (userSnapshot.exists()) {
       return userSnapshot.data();
     } else {
-      console.log('User not found');
+      console.log("User not found");
       return null;
     }
   } catch (error) {
-    console.error('Error fetching user:', error);
+    console.error("Error fetching user:", error);
     return null;
   }
-}
- 
+};
+
 export const fetchProducts = async () => {
   try {
     const querySnapshot = await getDocs(collection(db, "products"));
@@ -192,16 +207,156 @@ export const addToWishlist = async (userId, productId) => {
   }
 };
 
-
 export const removeFromWishlist = async (userId, productId) => {
   try {
     const userRef = doc(db, "users", userId);
     await updateDoc(userRef, {
-      wishlist: arrayRemove(productId)
+      wishlist: arrayRemove(productId),
     });
     console.log("Product removed from wishlist");
   } catch (error) {
     console.error("Error removing from wishlist:", error);
+  }
+};
+
+export const addItemToCart = async (userId, productId) => {
+  try {
+    const userRef = doc(db, "users", userId);
+
+    // Fetch the user document
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+
+      // Check if the cart field exists in the user data
+      if (!userData.cart) {
+        userData.cart = []; // Initialize the cart as an empty array
+      }
+
+      // Check if the product is already in the cart
+      const existingCartItem = userData.cart.find((item) => item.productId === productId);
+
+      if (existingCartItem) {
+        // If the product is already in the cart, increment its count
+        existingCartItem.productCount += 1;
+      } else {
+        // If the product is not in the cart, add it
+        userData.cart.push({
+          productId,
+          productCount: 1, // Initialize the count to 1
+        });
+      }
+
+      // Update the user document with the modified cart
+      await updateDoc(userRef, { cart: userData.cart });
+
+      console.log("Product added to cart");
+    } else {
+      console.log("User document does not exist.");
+    }
+  } catch (error) {
+    console.error("Error adding item to cart:", error);
+  }
+};
+
+export const incrementProductCount = async (userId, productId) => {
+  try {
+    const userRef = doc(db, "users", userId);
+
+    // Fetch the user document
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+
+      // Check if the cart field exists in the user data
+      if (!userData.cart) {
+        userData.cart = []; // Initialize the cart as an empty array
+      }
+
+      // Find the cart item by productId and increment the count
+      const updatedCart = userData.cart.map((item) => {
+        if (item.productId === productId) {
+          item.productCount += 1;
+        }
+        return item;
+      });
+
+      // Update the user document with the modified cart
+      await updateDoc(userRef, { cart: updatedCart });
+
+      console.log("Product count incremented");
+    } else {
+      console.log("User document does not exist.");
+    }
+  } catch (error) {
+    console.error("Error incrementing product count:", error);
+  }
+};
+
+export const decrementProductCount = async (userId, productId) => {
+  try {
+    const userRef = doc(db, "users", userId);
+
+    // Fetch the user document
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+
+      // Check if the cart field exists in the user data
+      if (!userData.cart) {
+        userData.cart = []; // Initialize the cart as an empty array
+      }
+
+      // Find the cart item by productId
+      const cartItem = userData.cart.find((item) => item.productId === productId);
+
+      if (cartItem) {
+        // Check if the count is greater than 1 before decrementing
+        if (cartItem.productCount > 1) {
+          cartItem.productCount -= 1;
+        } else {
+          // If count is 1, remove the item from the cart
+          userData.cart = userData.cart.filter((item) => item.productId !== productId);
+        }
+
+        // Update the user document with the modified cart
+        await updateDoc(userRef, { cart: userData.cart });
+
+        console.log("Product count decremented");
+      }
+    } else {
+      console.log("User document does not exist.");
+    }
+  } catch (error) {
+    console.error("Error decrementing product count:", error);
+  }
+};
+
+export const removeItemFromCart = async (userId, productId) => {
+  try {
+    const userRef = doc(db, "users", userId);
+
+    // Fetch the user document
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+
+      // Filter the cart to exclude the product with the given productId
+      const updatedCart = userData.cart.filter(item => item.productId !== productId);
+
+      // Update the user document with the modified cart
+      await updateDoc(userRef, { cart: updatedCart });
+
+      console.log("Product removed from cart");
+    } else {
+      console.log("User document does not exist.");
+    }
+  } catch (error) {
+    console.error("Error removing item from cart:", error);
   }
 };
 
@@ -240,7 +395,6 @@ export const deleteProductPicture = async (productId, pictureURL) => {
   }
 };
 
-
 export const updateProductPictures = async (productId, pictures) => {
   try {
     const pictureURLs = [];
@@ -268,7 +422,6 @@ export const updateProductPictures = async (productId, pictures) => {
     return [];
   }
 };
-
 
 export const updateProduct = async (productId, updatedData) => {
   try {

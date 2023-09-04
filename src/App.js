@@ -7,6 +7,7 @@ import Product from "./components/Product/product.component";
 import ProductUpload from "./components/admin/productUpload.admin";
 import User from "./components/Account/user.component";
 import Wishlist from "./components/Wishlist/wishlist.component";
+import Cart from "./components/Cart/cart.component";
 
 // Mapping object for URL parameters and category names
 const categoryMapping = {
@@ -98,7 +99,17 @@ function App() {
           />
         }
       />
-      <Route path="/user" element={<User />} />
+      <Route
+        path="/cart"
+        element={
+          <Cart
+            userData={userData}
+            setUserData={setUserData}
+            products={products}
+          />
+        }
+      />
+      <Route path="/user" element={<User setUserData={setUserData}/>} />
       <Route
         path="/:categoryName"
         element={

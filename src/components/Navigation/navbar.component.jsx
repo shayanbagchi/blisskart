@@ -66,9 +66,9 @@ const NavBar = ({ userData, setUserData }) => {
           <Link to="/wishlist" className="cursor-pointer">
             <HeartIcon className="w-6 h-6" title="Wishlist" />
           </Link>
-          <span className="cursor-pointer" title="Cart">
+          <Link to="/cart" className="cursor-pointer" title="Cart">
             <CartIcon />
-          </span>
+          </Link>
           <span
             className="cursor-pointer"
             title="Account"

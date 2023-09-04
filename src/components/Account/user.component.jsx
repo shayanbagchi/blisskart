@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Login from "./login.component";
 import SignUp from "./signup.component";
 
-function User() {
+function User({setUserData}) {
   const [isRegestered, setIsRegestered] = useState(true);
 
   const toggleUser = () => {
@@ -13,7 +13,7 @@ function User() {
     <div className="h-screen font-poppins bg-magic-200 bg-opacity-30 overflow-auto">
       <div className="flex flex-col justify-center items-center mt-[3%]">
         <div className="w-full md:w-[420px] rounded-3xl bg-white shadow-xl">
-          {isRegestered ? <Login /> : <SignUp />}
+          {isRegestered ? <Login /> : <SignUp setUserData={setUserData} />}
           <div className="flex justify-center items-center mt-5 mx-8 mb-12">
             <p className="text-sm font-normal mr-1">
               {isRegestered

@@ -6,6 +6,7 @@ import {
   registerUserWithEmailAndPassword,
   createUserDocFromAuth,
   signInWithGooglePopup,
+  fetchUserData,
 } from "../../utils/firebase.util";
 
 const defaultFormFields = {
@@ -14,7 +15,7 @@ const defaultFormFields = {
   password: "",
 };
 
-function SignUp() {
+function SignUp({setUserData}) {
   const navigate = useNavigate();
 
   const [formFields, setFormFields] = useState(defaultFormFields);
@@ -33,10 +34,23 @@ function SignUp() {
     event.preventDefault();
 
     try {
-      const { user } = await registerUserWithEmailAndPassword(email, password);
+      const { user } = await registerUserWithEmailAndPassword(displayName, email, password);
       await createUserDocFromAuth(user, { displayName });
-      resetFormFields();
+      
+      fetchUserData(user.uid)
+        .then((userData) => {
+          setUserData(userData);
+
+          let name = user ? (user.displayName) : '';
+          console.log("SignUp: " + name);
+          
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
+
       navigate(-1);
+      resetFormFields();
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         alert("email already exists!");

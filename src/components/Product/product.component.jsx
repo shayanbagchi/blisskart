@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ReactComponent as HeartIcon } from "../../assets/heart_icon.svg";
 import { ReactComponent as BagIcon } from "../../assets/bag_icon.svg";
@@ -15,12 +15,17 @@ import {
 import "pure-react-carousel/dist/react-carousel.es.css";
 import { ReactComponent as LeftIcon } from "../../assets/left_icon.svg";
 import { ReactComponent as RightIcon } from "../../assets/right_icon.svg";
+import { ReactComponent as MinusIcon } from "../../assets/minus_icon.svg";
+import { ReactComponent as PlusIcon } from "../../assets/plus_icon.svg";
 import Footer from "../Footer/footer.component";
 import ProductTabs from "./productTabs.component";
 import {
   fetchUserData,
   addToWishlist,
   removeFromWishlist,
+  addItemToCart,
+  incrementProductCount,
+  decrementProductCount
 } from "../../utils/firebase.util.js";
 
 function Product({ userData, setUserData, product, bestsellers }) {
@@ -28,6 +33,8 @@ function Product({ userData, setUserData, product, bestsellers }) {
 
   const [fill, setFill] = useState("#ffffff");
   const [isProductInWishlist, setIsProductInWishlist] = useState(false);
+
+  const [productCount, setProductCount] = useState(0);
 
   const [visibleSlides, setVisibleSlides] = useState("");
   const [initialLoad, setInitialLoad] = useState(true);
@@ -46,6 +53,16 @@ function Product({ userData, setUserData, product, bestsellers }) {
   useEffect(() => {
     isProductInWishlist ? setFill("#e55e74") : setFill("#ffffff");
   }, [product.id, isProductInWishlist]);
+
+  useEffect(() => {
+    // Function to filter the cart and get the product count
+    function getProductCountInCart(cart, productId) {
+      const filteredProduct = cart.find(item => item.productId === productId);
+      setProductCount(filteredProduct ? filteredProduct.productCount : 0);
+    }
+
+    getProductCountInCart(userData.cart, product.id);
+  }, [userData.cart, product.id]); // Run this effect whenever userData.cart changes
 
   useEffect(() => {
     const handleResize = () => {
@@ -83,59 +100,59 @@ function Product({ userData, setUserData, product, bestsellers }) {
   useEffect(() => {
     const handleCarouselResize = () => {
       if (carouselRef.current) {
-        const images = carouselRef.current.getElementsByTagName('img');
-        
-        const imageLoadPromises = Array.from(images).map(img =>
-          new Promise(resolve => {
-            img.addEventListener('load', () => {
-              resolve(img.clientHeight);
-            });
-          })
+        const images = carouselRef.current.getElementsByTagName("img");
+
+        const imageLoadPromises = Array.from(images).map(
+          (img) =>
+            new Promise((resolve) => {
+              img.addEventListener("load", () => {
+                resolve(img.clientHeight);
+              });
+            })
         );
-        
-        Promise.all(imageLoadPromises).then(heights => {
+
+        Promise.all(imageLoadPromises).then((heights) => {
           const newHeight = Math.max(...heights);
           setCarouselHeight(newHeight);
           // console.log('Run: handleCarouselResize - ' + newHeight);
         });
       }
     };
-  
+
     const handleContentLoaded = () => {
       if (carouselRef.current) {
-        const images = carouselRef.current.getElementsByTagName('img');
-        
-        const imageLoadPromises = Array.from(images).map(img =>
-          new Promise(resolve => {
-            img.addEventListener('load', () => {
-              resolve(img.clientHeight);
-            });
-          })
+        const images = carouselRef.current.getElementsByTagName("img");
+
+        const imageLoadPromises = Array.from(images).map(
+          (img) =>
+            new Promise((resolve) => {
+              img.addEventListener("load", () => {
+                resolve(img.clientHeight);
+              });
+            })
         );
-        
-        Promise.all(imageLoadPromises).then(heights => {
+
+        Promise.all(imageLoadPromises).then((heights) => {
           const initialHeight = Math.max(...heights);
           setCarouselHeight(initialHeight);
           // console.log('Run: handleContentLoaded - ' + initialHeight);
         });
       }
     };
-  
-    if (document.readyState === 'complete') {
+
+    if (document.readyState === "complete") {
       handleContentLoaded();
     } else {
-      window.addEventListener('load', handleContentLoaded);
+      window.addEventListener("load", handleContentLoaded);
     }
-  
-    window.addEventListener('resize', handleCarouselResize);
-  
+
+    window.addEventListener("resize", handleCarouselResize);
+
     return () => {
-      window.removeEventListener('resize', handleCarouselResize);
-      window.removeEventListener('load', handleContentLoaded);
+      window.removeEventListener("resize", handleCarouselResize);
+      window.removeEventListener("load", handleContentLoaded);
     };
   }, []);
-  
-  
 
   const addItemToWishlist = async () => {
     await addToWishlist(userData.uid, product.id);
@@ -154,10 +171,9 @@ function Product({ userData, setUserData, product, bestsellers }) {
   };
 
   const handleItemInWishlist = async () => {
-
     if (!userData) {
       // User is not logged in, navigate to /user page
-      navigate('/user');
+      navigate("/user");
       return;
     }
 
@@ -170,6 +186,30 @@ function Product({ userData, setUserData, product, bestsellers }) {
       await addItemToWishlist();
       setFill("#e55e74");
     }
+
+    // Fetch the updated user data and update the userData state
+    const updatedUserData = await fetchUserData(userData.uid);
+    setUserData(updatedUserData);
+  };
+
+  const handleIncrementProductCount = async () => {
+    await incrementProductCount(userData.uid, product.id);
+
+    // Fetch the updated user data and update the userData state
+    const updatedUserData = await fetchUserData(userData.uid);
+    setUserData(updatedUserData);
+  };
+
+  const handleDecrementProductCount = async () => {
+    await decrementProductCount(userData.uid, product.id);
+
+    // Fetch the updated user data and update the userData state
+    const updatedUserData = await fetchUserData(userData.uid);
+    setUserData(updatedUserData);
+  };
+
+  const handleAddItemToCart = async () => {
+    await addItemToCart(userData.uid, product.id);
 
     // Fetch the updated user data and update the userData state
     const updatedUserData = await fetchUserData(userData.uid);
@@ -271,9 +311,9 @@ function Product({ userData, setUserData, product, bestsellers }) {
               <div className="border-b border-neutral-300" />
             </div>
             <div className="flex justify-evenly w-full h-[10%] mt-1">
-              <button className="w-[48%] md:py-1 lg:py-2 lg:px-2 md:text-xs lg:text-base xl:text-lg text-neutral-700 bg-gray-100 hover:bg-gray-200 rounded-full">
+              <button className="w-[48%] md:py-1 lg:py-2 lg:px-2 md:text-xs lg:text-base xl:text-lg text-neutral-700 bg-gray-100 hover:bg-gray-200 rounded-lg hover:scale-[101%]">
                 <span
-                  className="flex justify-center items-center hover:scale-[101%]"
+                  className="flex justify-center items-center"
                   onClick={handleItemInWishlist}
                 >
                   ADD TO WISHLIST{" "}
@@ -283,12 +323,35 @@ function Product({ userData, setUserData, product, bestsellers }) {
                   />
                 </span>
               </button>
-              <button className="w-[48%] md:py-1 lg:py-2 lg:px-2 md:text-xs lg:text-base xl:text-lg text-white bg-magic-600 hover:bg-magic-800 py-2 px-2 rounded-full">
-                <span className="flex justify-center hover:scale-[101%]">
-                  ADD TO CART{" "}
-                  <BagIcon className="w-4 h-4 xl:w-6 xl:h-6 md:ml-1 lg:ml-2" />
-                </span>
-              </button>
+              {productCount !== 0 ? (
+                <div className="w-[48%] flex items-center justify-evenly md:py-1 lg:py-2 lg:px-2 md:text-xs lg:text-base xl:text-lg text-white bg-magic-600 py-2 px-2 rounded-lg hover:scale-[101%]">
+                  <button
+                    className="px-4 py-3 rounded-xl border hover:bg-magic-800 hover:scale-[101%] shadow-md"
+                    title="Decrease Quantity"
+                    onClick={handleDecrementProductCount}
+                  >
+                    <MinusIcon className="w-4 h-4" fill="white"/>
+                  </button>
+                  <span>{productCount}</span>
+                  <button
+                    className="px-4 py-3 rounded-xl border hover:bg-magic-800 hover:scale-[101%] shadow-md"
+                    title="Increase Quantity"
+                    onClick={handleIncrementProductCount}
+                  >
+                    <PlusIcon className="w-4 h-4" fill="white"/>
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className="w-[48%] md:py-1 lg:py-2 lg:px-2 md:text-xs lg:text-base xl:text-lg text-white bg-magic-600 hover:bg-magic-800 py-2 px-2 rounded-lg"
+                  onClick={handleAddItemToCart}
+                >
+                  <span className="flex justify-center hover:scale-[101%]">
+                    ADD TO CART{" "}
+                    <BagIcon className="w-4 h-4 xl:w-6 xl:h-6 md:ml-1 lg:ml-2" />
+                  </span>
+                </button>
+              )}
             </div>
           </div>
         </div>
